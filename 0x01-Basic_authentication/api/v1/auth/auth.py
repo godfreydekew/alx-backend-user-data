@@ -17,6 +17,8 @@ class Auth:
         if not path.endswith('/'):
             path += '/'
 
+        excluded_paths = map(lambda pat: pat.replace('*', ''), excluded_paths)
+
         if path in excluded_paths:
             return False
         return True
