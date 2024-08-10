@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+"""7. New view for Session Authentication"""
 from api.v1.views import app_views
 from flask import request, jsonify
 from models.user import User
@@ -14,19 +16,42 @@ def session_login():
         return jsonify({"error": "email missing"}), 400
     if not password or password == "":
         return jsonify({"error": "password missing"}), 400
-    user_list = User.search({'email': email})
-    if not user_list or len(user_list) == 0:
+
+    try:
+        users = User.search({'email': email})
+    except Exception:
         return jsonify({"error": "no user found for this email"}), 404
-    user = user_list[0]
-    if not user.is_valid_password(password):
+
+    if not users:
+        return jsonify({"error": "no user found for this email"}), 404
+
+    for user in users:
+        found_user_bool = user.is_valid_password(password)
+        if user.is_valid_password(password):
+            found_user = user
+    if not found_user_bool:
         return jsonify({"error": "wrong password"}), 401
 
     from api.v1.app import auth
-
-    session_id = auth.create_session(user.id)
-    response = jsonify(user.to_json())
-
+    session_id = auth.create_session(found_user.id)
     session_name = getenv("SESSION_NAME")
-    response.set_cookie(session_name, session_id)
 
+    response = jsonify(found_user.to_json())
+    response.set_cookie(session_name, session_id)
     return response
+
+    # if not user_list or len(user_list) == 0:
+    #     return jsonify({"error": "no user found for this email"}), 404
+    # user = user_list[0]
+    # if not user.is_valid_password(password):
+    #     return jsonify({"error": "wrong password"}), 401
+    #
+    # from api.v1.app import auth
+    #
+    # session_id = auth.create_session(user.id)
+    # response = jsonify(user.to_json())
+    #
+    # session_name = getenv("SESSION_NAME")
+    # response.set_cookie(session_name, session_id)
+    #
+    # return response
