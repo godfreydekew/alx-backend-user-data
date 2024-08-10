@@ -40,18 +40,12 @@ def session_login():
     response.set_cookie(session_name, session_id)
     return response
 
-    # if not user_list or len(user_list) == 0:
-    #     return jsonify({"error": "no user found for this email"}), 404
-    # user = user_list[0]
-    # if not user.is_valid_password(password):
-    #     return jsonify({"error": "wrong password"}), 401
-    #
-    # from api.v1.app import auth
-    #
-    # session_id = auth.create_session(user.id)
-    # response = jsonify(user.to_json())
-    #
-    # session_name = getenv("SESSION_NAME")
-    # response.set_cookie(session_name, session_id)
-    #
-    # return response
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
+def destroy_session(self, request=None):
+    """ Logout user by destroying session """
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return jsonify({}), 200
