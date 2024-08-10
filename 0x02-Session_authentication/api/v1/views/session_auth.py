@@ -5,7 +5,7 @@ from os import getenv
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
-def session_login() -> str:
+def session_login():
     """handles all routes for the Session authentication"""
     email = request.form.get('email')
     password = request.form.get('password')
