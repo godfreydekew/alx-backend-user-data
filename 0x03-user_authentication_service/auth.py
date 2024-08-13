@@ -28,9 +28,11 @@ class Auth:
     """
 
     def __init__(self):
+        """Initialize db class"""
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
+        """Adds a new user to the database"""
         session = self._db._session
         try:
             user = self._db.find_user_by(email=email)
