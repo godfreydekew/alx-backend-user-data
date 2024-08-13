@@ -40,8 +40,8 @@ class DB:
         session.commit()
         return user
 
-    def find_user_by(self, **kwargs):
-        """FInd the first user with the given id"""
+    def find_user_by(self, **kwargs) -> User:
+        """Find the first user with the given id"""
         session = self.__session
 
         try:
