@@ -3,7 +3,6 @@
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine("sqlite://", echo=True)
 Base = declarative_base()
 
 
