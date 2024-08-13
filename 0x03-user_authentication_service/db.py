@@ -43,7 +43,6 @@ class DB:
     def find_user_by(self, **kwargs) -> User:
         """Find the first user with the given id"""
         session = self.__session
-
         try:
             user = session.query(User).filter_by(**kwargs).one()
             return user
@@ -52,3 +51,16 @@ class DB:
             raise NoResultFound("No user found")
         except InvalidRequestError:
             raise InvalidRequestError("Invalid query parameters")
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update the data of a specific user"""
+        session = self.__session
+        valid_attributes = set(User.__table__.columns.keys())
+        invalid_keys = set(kwargs.keys()) - valid_attributes
+
+        if invalid_keys:
+            raise ValueError("Invalid attributes")
+        user = self.find_user_by(id=user_id)
+        for key, value in kwargs.items():
+            setattr(user, key, value)
+        session.commit()
