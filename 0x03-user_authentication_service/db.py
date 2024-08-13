@@ -34,9 +34,6 @@ class DB:
         user = User(email=email, hashed_password=hashed_password)
         session = self._session
 
-        if session is None:
-            raise Exception("Database session is not initialized.")
-
         session.add(user)
         session.commit()
         return user
