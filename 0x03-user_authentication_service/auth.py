@@ -43,7 +43,7 @@ class Auth:
             hashed_password = _hash_password(password)
             user = self._db.add_user(
                 email=email,
-                hashed_password=hashed_password.decode('utf-8')
+                hashed_password=hashed_password
             )
             self._db
             return user
