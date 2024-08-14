@@ -51,11 +51,8 @@ class Auth:
         """Checks if the password is valid for the specific email"""
         try:
             user = self._db.find_user_by(email=email)
-            if user:
-                encoded_p = password.encode()
-                user_password = user.hashed_password.encode('utf-8')
-                return bcrypt.checkpw(encoded_p, user_password)
-            else:
-                return False
+            encoded_p = password.encode('utf-8')
+            user_password = user.hashed_password.encode('utf-8')
+            return bcrypt.checkpw(encoded_p, user_password)
         except NoResultFound:
             return False
