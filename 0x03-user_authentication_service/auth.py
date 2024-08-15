@@ -5,6 +5,7 @@ import bcrypt
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Optional
 
 
 def _hash_password(password: str) -> bytes:
@@ -79,7 +80,7 @@ class Auth:
         except Exception:
             pass
 
-    def get_user_from_session_id(self, session_id: str):
+    def get_user_from_session_id(self, session_id: str) -> Optional[User]:
         """Finds the user with the given session_id"""
         try:
             user = self._db.find_user_by(session_id=session_id)
@@ -88,3 +89,11 @@ class Auth:
             return None
         except Exception:
             return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """Destroys session_id for a given user id"""
+        try:
+            self._db.update_user(user_id, session_id=None)
+        except Exception:
+            pass
+        return None
