@@ -108,4 +108,3 @@ class Auth:
                 return uid
         except NoResultFound:
             raise ValueError("No user found")
-
