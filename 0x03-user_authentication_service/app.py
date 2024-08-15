@@ -82,9 +82,6 @@ def update_password():
     password = request.form.get('new_password')
     reset_token = request.form.get('reset_token')
 
-    if not email or not reset_token or not password:
-        abort(400)
-
     try:
         AUTH.update_password(reset_token, password)
         return flask.jsonify(
