@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Creates a simple flask app"""
 import flask
-from flask import Flask, request, abort, make_response
+from flask import Flask, request, abort, make_response, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -14,7 +14,7 @@ def home():
     return flask.jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=['POST'])
+@app.route("/users", methods=['POST'], strict_slashes=False)
 def users():
     """Checks if the user with the given email is created already or not"""
     email = request.form.get('email')
@@ -26,7 +26,7 @@ def users():
         return flask.jsonify({"message": "email already registered"}), 400
 
 
-@app.route("/sessions", methods=['POST'])
+@app.route("/sessions", methods=['POST'], strict_slashes=False)
 def login():
     """Adds the session id as the cookie"""
     email = request.form.get('email')
@@ -39,6 +39,18 @@ def login():
             response.set_cookie("session_id", session_id)
             return response
     abort(401)
+
+
+@app.route("/sessions", methods=['DELETE'], strict_slashes=False)
+def logout():
+    """Deletes the session with the current cookie"""
+    session_id = request.cookies.get('session_id')
+    if session_id:
+        user = AUTH.get_user_from_session_id(session_id)
+        if user:
+            AUTH.destroy_session(user.id)
+            return redirect("/")
+    abort(403)
 
 
 if __name__ == "__main__":
